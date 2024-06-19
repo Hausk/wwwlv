@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
+import { Header } from "@/components/header";
+import PageTransition from "@/components/page-transition";
+import TransitionEffect from "@/components/transition-effect";
 
-const inter = Inter({ subsets: ["latin"] });
+const jetbrains = Poppins({ 
+  subsets: ["latin"],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +23,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={jetbrains.className}>
+        <Header />
+        <TransitionEffect/>
+        <PageTransition>
+          <main className="mt-16">
+            {children}
+          </main>
+        </PageTransition>
+      </body>
     </html>
   );
 }
