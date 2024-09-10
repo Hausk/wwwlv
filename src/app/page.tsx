@@ -12,21 +12,40 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // S'assurer que l'on est bien dans un environnement client (navigateur)
+    let startY = 0; // Position de départ du toucher sur mobile
+
+    // Fonction pour gérer le scroll à la molette (pour bureau)
+    const handleWheelScroll = (event: any) => {
+      if (event.deltaY > 100) {
+        router.push("/photobox");
+      }
+    };
+
+    // Fonction pour gérer les événements tactiles sur mobile
+    const handleTouchStart = (event: any) => {
+      startY = event.touches[0].clientY;
+    };
+
+    const handleTouchMove = (event: any) => {
+      const currentY = event.touches[0].clientY;
+      if (startY - currentY > 100) {
+        router.push("/photobox");
+      }
+    };
+
+    // Ajouter les événements
     if (typeof window !== "undefined") {
-      const handleScroll = (event: any) => {
-        if (event.deltaY > 100) {
-          // Gros coup de molette (vers le bas)
-          router.push("/photobox");
-        }
-      };
-
-      window.addEventListener("wheel", handleScroll);
-
-      return () => {
-        window.removeEventListener("wheel", handleScroll);
-      };
+      window.addEventListener("wheel", handleWheelScroll); // Bureau
+      window.addEventListener("touchstart", handleTouchStart); // Mobile
+      window.addEventListener("touchmove", handleTouchMove); // Mobile
     }
+
+    // Nettoyer les événements à la désactivation du composant
+    return () => {
+      window.removeEventListener("wheel", handleWheelScroll);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
   }, [router]);
 
   return (
